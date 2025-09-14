@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  autosearcher-bot:
+    build: .
+    container_name: autosearcher-bot
+    restart: unless-stopped
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - DEBUG=${DEBUG:-False}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/app/logs
+      - ./.env:/app/.env:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import src.app.app; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: Add database service
+  # database:
+  #   image: postgres:15-alpine
+  #   container_name: autosearcher-db
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_DB: autosearcher
+  #     POSTGRES_USER: ${DB_USER:-postgres}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:
