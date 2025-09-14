@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+  auto-searcher-bot:
+    build: .
+    container_name: auto-searcher-bot
+    restart: unless-stopped
+    tty: true
